@@ -1,0 +1,76 @@
+generator client {
+  provider = "prisma-client"
+  output   = "../src/generated/prisma"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+enum CategoryType {
+  INCOME
+  EXPENSE
+}
+
+model User {
+  id         String     @id @default(uuid())
+  email      String     @unique
+  name       String?
+  categories Category[]
+  incomes    Income[]
+  expenses   Expense[]
+  createdAt  DateTime   @default(now())
+  updatedAt  DateTime   @updatedAt
+
+  @@map("users")
+}
+
+model Category {
+  id        String       @id @default(uuid())
+  name      String
+  userId    String
+  user      User         @relation(fields: [userId], references: [id], onDelete: Cascade)
+  incomes   Income[]
+  expenses  Expense[]
+  icon      String       @default("other")
+  type      CategoryType @default(EXPENSE)
+  createdAt DateTime     @default(now())
+  updatedAt DateTime     @updatedAt
+
+  @@unique([userId, name])
+  @@map("categories")
+}
+
+model Income {
+  id         String   @id @default(uuid())
+  amount     Int
+  date       DateTime @db.Date
+  userId     String
+  user       User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  categoryId String
+  category   Category @relation(fields: [categoryId], references: [id], onDelete: Restrict)
+  comment    String?
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+
+  @@index([userId, date])
+  @@index([categoryId])
+  @@map("incomes")
+}
+
+model Expense {
+  id         String   @id @default(uuid())
+  amount     Int
+  date       DateTime @db.Date
+  userId     String
+  user       User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  categoryId String
+  category   Category @relation(fields: [categoryId], references: [id], onDelete: Restrict)
+  comment    String?
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+
+  @@index([userId, date])
+  @@index([categoryId])
+  @@map("expenses")
+}
