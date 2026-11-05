@@ -1,6 +1,20 @@
+"use client";
+
 import Link from "next/link";
+import { useRouter } from "next/navigation";
+import { authClient } from "@/lib/auth-client";
 
 const Header = () => {
+  const router = useRouter();
+
+  const { data: session, isPending } = authClient.useSession();
+
+  const handleSignOut = async () => {
+    await authClient.signOut();
+
+    router.push("/sign-in");
+  };
+
   return (
     <header>
       <nav className="bg-zinc-900 p-4">
@@ -10,19 +24,11 @@ const Header = () => {
           </Link>
           <ul className="flex space-x-4">
             <li>
-              <Link href="/" className="text-gray-300 hover:text-white">
-                Общее
-              </Link>
-            </li>
-            <li>
-              <Link href="/about" className="text-gray-300 hover:text-white">
-                Доходы
-              </Link>
-            </li>
-            <li>
-              <Link href="/contact" className="text-gray-300 hover:text-white">
-                Расходы
-              </Link>
+              {isPending ? null : session ? (
+                <button onClick={handleSignOut}>Выйти</button>
+              ) : (
+                <Link href="/sign-in">Войти</Link>
+              )}
             </li>
           </ul>
         </div>

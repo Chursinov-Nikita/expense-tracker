@@ -36,18 +36,21 @@ const SignUpPage = () => {
         onChange={(e) => setName(e.target.value)}
         type="text"
         placeholder="Name"
+        required
       />
       <input
         value={email}
         onChange={(e) => setEmail(e.target.value)}
         type="email"
         placeholder="Email"
+        required
       />
       <input
         value={password}
         onChange={(e) => setPassword(e.target.value)}
         type="password"
         placeholder="Password"
+        required
       />
 
       {error && <p>{error}</p>}
