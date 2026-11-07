@@ -1,5 +1,6 @@
 import { requireUser } from "@/lib/session";
 import { prisma } from "@/lib/prisma";
+import { CATEGORY_COLORS, getCategoryIcon } from "@/lib/category-appearance";
 
 async function CategoryList() {
   const user = await requireUser();
@@ -15,9 +16,19 @@ async function CategoryList() {
 
   return (
     <ul>
-      {categories.map((category) => (
-        <li key={category.id}>{category.name}</li>
-      ))}
+      {categories.map((category) => {
+        const Icon = getCategoryIcon(category.icon);
+
+        return (
+          <li key={category.id} className="flex items-center gap-2">
+            <Icon
+              className="size-4"
+              style={{ color: CATEGORY_COLORS[category.type] }}
+            />
+            {category.name}
+          </li>
+        );
+      })}
     </ul>
   );
 }
