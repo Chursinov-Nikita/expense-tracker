@@ -1,6 +1,7 @@
 import { requireUser } from "@/lib/session";
 import { prisma } from "@/lib/prisma";
 import { CATEGORY_COLORS, getCategoryIcon } from "@/lib/category-appearance";
+import { deleteCategory } from "../categories/actions";
 
 async function CategoryList() {
   const user = await requireUser();
@@ -26,6 +27,10 @@ async function CategoryList() {
               style={{ color: CATEGORY_COLORS[category.type] }}
             />
             {category.name}
+            <form action={deleteCategory}>
+              <input type="hidden" name="id" value={category.id} />
+              <button type="submit">Удалить</button>
+            </form>
           </li>
         );
       })}

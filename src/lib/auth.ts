@@ -23,6 +23,55 @@ export const auth = betterAuth({
 
           return { data: { ...user, name } };
         },
+        after: async (user) => {
+          await prisma.category.createMany({
+            data: [
+              { name: "Еда", icon: "food", type: "EXPENSE", userId: user.id },
+              {
+                name: "Транспорт",
+                icon: "transport",
+                type: "EXPENSE",
+                userId: user.id,
+              },
+              {
+                name: "Покупки",
+                icon: "shopping",
+                type: "EXPENSE",
+                userId: user.id,
+              },
+              {
+                name: "Счета",
+                icon: "bills",
+                type: "EXPENSE",
+                userId: user.id,
+              },
+              {
+                name: "Здоровье",
+                icon: "health",
+                type: "EXPENSE",
+                userId: user.id,
+              },
+              {
+                name: "Развлечения",
+                icon: "entertainment",
+                type: "EXPENSE",
+                userId: user.id,
+              },
+              {
+                name: "Зарплата",
+                icon: "salary",
+                type: "INCOME",
+                userId: user.id,
+              },
+              {
+                name: "Подработка",
+                icon: "freelance",
+                type: "INCOME",
+                userId: user.id,
+              },
+            ],
+          });
+        },
       },
     },
   },

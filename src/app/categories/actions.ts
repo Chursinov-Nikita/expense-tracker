@@ -29,6 +29,14 @@ export async function createCategory(
     return { error: "Выберите тип" };
   }
 
+  const existing = await prisma.category.findUnique({
+    where: { userId_name: { userId: user.id, name } },
+  });
+
+  if (existing) {
+    return { error: "Такая категория уже есть" };
+  }
+
   await prisma.category.create({
     data: { name, icon, type, userId: user.id },
   });
@@ -36,4 +44,15 @@ export async function createCategory(
   revalidatePath("/categories");
 
   return {};
+}
+
+export async function deleteCategory(formData: FormData) {
+  const user = await requireUser();
+  const id = String(formData.get("id") ?? "");
+
+  await prisma.category.deleteMany({
+    where: { id, userId: user.id },
+  });
+
+  revalidatePath("/categories");
 }
